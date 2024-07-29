@@ -80,7 +80,7 @@ ex () {
   fi
 }
 
-# don't put duplicate lines or lines starting with space in the history.
+# don't put duplicate lines or lines starting with space in the history
 export HISTCONTROL=ignoreboth
 
 # ignore upper and lowercase when TAB completion
