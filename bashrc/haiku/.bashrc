@@ -5,7 +5,7 @@
 set -o vi
 
 # aliases
-alias update='pkgman update -y && pkgman full-sync && pkgman clean'
+alias update='pkgman refresh && pkgman update -y && pkgman full-sync'
 alias install='pkgman install -y'
 alias sync='pkgman update -y'
 alias remove='pkgman uninstall -y'
