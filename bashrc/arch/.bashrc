@@ -38,8 +38,6 @@ alias diff='diff --color=auto'
 alias ip='ip --color=auto'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
-alias kp='killall pcmanfm' 
-alias or='openbox --replace && exit'
 alias linfo='inxi -Fxxxrza'
 alias mv='mv -iv'
 alias rm='rm -iv'
@@ -57,6 +55,7 @@ alias yt-best="yt -f bestvideo+bestaudio"
 alias yt='yt-dlp'
 alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
+alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
 # exports
 export VISUAL=vim

@@ -31,7 +31,6 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias diff='diff --color=auto'
 alias kx='killall xfe'
-alias or='openbox --replace && exit'
 alias linfo='inxi -Fxxxrza'
 alias mv='mv -iv'
 alias rm='rm -iv'
@@ -49,6 +48,7 @@ alias yt-best="yt -f bestvideo+bestaudio"
 alias yt='yt-dlp'
 alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
+alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
 # exports
 export VISUAL=vim
