@@ -5,32 +5,15 @@
 # aliases
 alias update='brew update && brew upgrade && brew autoremove && brew cleanup'
 alias install='brew install'
-alias sync='brew update'
 alias remove='brew uninstall'
 alias search='brew search'
 alias reboot='sudo reboot'
 alias ls='eza -l --color=always --group-directories-first'
 alias la='eza -al --color=always --group-directories-first'
-alias lt='eza -aT --color=always --group-directories-first'
-alias l.='eza -a | egrep "^\."'
-alias weather='curl wttr.in'
-alias hisgrep='history | grep --color=auto'
-alias df='df -h'
-alias find='sudo find'
 alias ..='cd ..'
-alias ...='cd ../..'
 alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
-alias gp='git pull'
 alias gc='git clone'
-alias gs='git status'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias diff='diff --color=auto'
-alias linfo='inxi -Fxxxrza'
-alias mv='mv -iv'
 alias rm='rm -iv'
-alias cp='cp -iv'
 alias playlist-dl="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
 alias yta-aac="yt --extract-audio --audio-format aac"
 alias yta-best="yt --extract-audio --audio-format best"
@@ -45,10 +28,6 @@ alias yt='yt-dlp'
 alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
-
-# exports
-export VISUAL=vim
-export EDITOR="$VISUAL"
 
 PS1="\[$(tput bold)\]\[$(tput setaf 1)\][\[$(tput setaf 3)\]\u\[$(tput setaf 2)\]@\[$(tput setaf 4)\]\h \[$(tput setaf 5)\]\W\[$(tput setaf 1)\]]\[$(tput setaf 7)\]\\$ \[$(tput sgr0)\]"
 
@@ -81,9 +60,6 @@ ex () {
 
 # don't put duplicate lines or lines starting with space in the history
 HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
 
 # ignore upper and lowercase when TAB completion
 bind "set completion-ignore-case on"
