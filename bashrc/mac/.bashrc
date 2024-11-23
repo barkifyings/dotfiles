@@ -2,8 +2,6 @@
 # if not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-bindkey -v
-
 # aliases
 alias update='brew update && brew upgrade && brew autoremove && brew cleanup'
 alias install='brew install'
@@ -89,3 +87,49 @@ shopt -s histappend
 
 # ignore upper and lowercase when TAB completion
 bind "set completion-ignore-case on"
+
+function extract-frames {
+    local input_file="$1"
+    local output_dir="${2:-frames}"
+    
+    # Check if input file was provided
+    if [ -z "$input_file" ]; then
+        echo "Usage: extract-frames <video_file> [output_dir]"
+        return 1
+    fi
+    
+    # Check if input file exists
+    if [ ! -f "$input_file" ]; then
+        echo "Error: Input file \"$input_file\" does not exist"
+        return 1
+    fi
+    
+    # Get video information before extraction
+    echo "Analyzing video..."
+    local fps=$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of default=noprint_wrappers=1:nokey=1 "$input_file")
+    local duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$input_file")
+    local expected_frames=$(echo "$fps * $duration" | bc -l | cut -d'.' -f1)
+    
+    echo "Video FPS: $fps"
+    echo "Duration: $duration seconds"
+    echo "Expected number of frames: $expected_frames"
+    
+    # Create output directory if it doesn't exist
+    mkdir -p "$output_dir"
+    
+    # Extract frames using ffmpeg
+    echo "Extracting frames..."
+    ffmpeg -i "$input_file" -fps_mode vfr "$output_dir/frame_%d.png"
+    
+    # Count actual extracted frames
+    local extracted_frames=$(ls -1 "$output_dir"/frame_*.png 2>/dev/null | wc -l)
+    echo "Extracted frames: $extracted_frames"
+    
+    if [ "$extracted_frames" -eq "$expected_frames" ]; then
+        echo "✅ Extraction complete - all frames were extracted"
+    else
+        echo "⚠️  Number of extracted frames differs from expected frames"
+        echo "This might be normal if the video has variable frame rate (VFR)"
+        echo "or if some frames are duplicates"
+    fi
+}
