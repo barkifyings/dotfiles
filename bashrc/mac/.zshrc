@@ -29,7 +29,7 @@ alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
-PS1="%{$(tput bold)%}%{$(tput setaf 1)%}[%{$(tput setaf 3)%}%n%{$(tput setaf 2)%}@%{$(tput setaf 4)%}%m %{$(tput setaf 5)%}%~%{$(tput setaf 1)%}]%{$(tput setaf 7)%}\$ %{$(tput sgr0)%}"
+PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%m %F{magenta}%~%F{red}]%F{white}%# %b%f"
 
 # archive extractor, usage: ex <file>
 ex () {

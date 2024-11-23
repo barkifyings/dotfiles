@@ -29,7 +29,13 @@ alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
-PS1="\[$(tput bold)\]\[$(tput setaf 1)\][\[$(tput setaf 3)\]\u\[$(tput setaf 2)\]@\[$(tput setaf 4)\]\h \[$(tput setaf 5)\]\W\[$(tput setaf 1)\]]\[$(tput setaf 7)\]\\$ \[$(tput sgr0)\]"
+# Make tab cycle through completion options instead of just listing them
+bind 'TAB:menu-complete'
+
+# Show all completions on first tab press if there are multiple options
+bind 'set show-all-if-ambiguous on'
+
+PS1="\[\e[1;31m\][\[\e[33m\]\u\[\e[32m\]@\[\e[34m\]\h \[\e[35m\]\W\[\e[31m\]]\[\e[37m\]\\$ \[\e[0m\]"
 
 # archive extractor, usage: ex <file>
 ex () {
