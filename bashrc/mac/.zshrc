@@ -10,6 +10,7 @@ alias search='brew search'
 
 # System commands
 alias reboot='sudo reboot'
+alias poweroff='sudo shutdown -h now'
 
 # Navigation & files
 alias ls='eza -l --color=always --group-directories-first'
