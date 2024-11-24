@@ -1,19 +1,27 @@
-#!/bin/zsh
-# if not running interactively, don't do anything
-[[ $- != *i* ]] && return
+# ============================
+# Aliases
+# ============================
 
-# aliases
+# Package management
 alias update='brew update && brew upgrade && brew autoremove && brew cleanup'
 alias install='brew install'
 alias remove='brew uninstall'
 alias search='brew search'
+
+# System commands
 alias reboot='sudo reboot'
+
+# Navigation & files
 alias ls='eza -l --color=always --group-directories-first'
 alias la='eza -al --color=always --group-directories-first'
 alias ..='cd ..'
-alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
-alias gc='git clone'
 alias rm='rm -iv'
+
+#Git aliases
+alias gc='git clone'
+alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
+
+#yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
 alias yta-aac="yt --extract-audio --audio-format aac"
 alias yta-best="yt --extract-audio --audio-format best"
@@ -29,9 +37,26 @@ alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
+# ============================
+# Shell Behavior and Prompt
+# ============================
+
+# Don't put duplicate lines or lines starting with space in the history
+export HISTCONTROL=ignoreboth
+
+# Ignore case in tab completion
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+
+# Shell prompt
 PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%m %F{magenta}%~%F{red}]%F{white}%# %b%f"
 
-# archive extractor, usage: ex <file>
+# ====================
+# Scripts
+# ====================
+
+# Archive extractor
 ex () {
   if [ -f "$1" ]; then
     case $1 in
@@ -55,15 +80,9 @@ ex () {
   fi
 }
 
-# don't put duplicate lines or lines starting with space in the history
-export HISTCONTROL=ignoreboth
 
-# ignore upper and lowercase when TAB completion
-autoload -Uz compinit && compinit
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
-# Extract frames
-
+# Video frame extractor
 function extract-frames {
     local input_file="$1"
     local output_dir="${2:-frames}"

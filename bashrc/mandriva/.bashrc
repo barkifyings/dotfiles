@@ -1,42 +1,33 @@
 #!/bin/bash
-# if not running interactively, don't do anything
+# Exit if not running interactively
 [[ $- != *i* ]] && return
 
-set -o vi
+# ============================
+# Aliases
+# ============================
 
-# aliases
+# Package management
 alias update='urpmi.update -a' 
 alias install='sudo urpmi'
 alias remove='sudo urpme --auto-orphans'
 alias search='sudo urpmq -y'
+
+# System commands
 alias reboot='sudo reboot'
 alias poweroff='sudo poweroff'
+alias info='inxi -Fxxxrza'
+
+# Navigation & files
 alias ls='ls -lh --color=auto --group-directories-first'
 alias la='ls -lAh --color=auto --group-directories-first'
-alias l.='ls -a | egrep "^\."'
-alias weather='curl wttr.in'
-alias hisgrep='history | grep --color=auto'
-alias df='df -h'
-alias free='free -m'
-alias find='sudo find'
 alias ..='cd ..'
-alias ...='cd ../..'
-alias audio='alsamixer'
-alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
-alias gp='git pull'
-alias gs='git status'
-alias gc='git clone'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias diff='diff --color=auto'
-alias ip='ip --color=auto'
-alias dir='dir --color=auto'
-alias vdir='vdir --color=auto'
-alias linfo='inxi -Fxxxrza'
-alias mv='mv -iv'
 alias rm='rm -iv'
-alias cp='cp -iv'
+
+#Git aliases
+alias gc='git clone'
+alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
+
+#yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
 alias yta-aac="yt --extract-audio --audio-format aac"
 alias yta-best="yt --extract-audio --audio-format best"
@@ -52,13 +43,31 @@ alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
-# exports
-export VISUAL=vim
-export EDITOR="$VISUAL"
+# ============================
+# Shell Behavior and Prompt
+# ============================
 
-PS1="\[$(tput bold)\]\[$(tput setaf 1)\][\[$(tput setaf 3)\]\u\[$(tput setaf 2)\]@\[$(tput setaf 4)\]\h \[$(tput setaf 5)\]\W\[$(tput setaf 1)\]]\[$(tput setaf 7)\]\\$ \[$(tput sgr0)\]"
+# Make tab cycle through completion options instead of just listing them
+bind 'TAB:menu-complete'
 
-# archive extractor, usage: ex <file>
+# Show all completions on first tab press if there are multiple options
+bind 'set show-all-if-ambiguous on'
+
+# Don't put duplicate lines or lines starting with space in the history
+HISTCONTROL=ignoreboth
+
+# Ignore case in tab completion
+bind "set completion-ignore-case on"
+
+
+# Shell prompt
+PS1="\[\e[1;31m\][\[\e[33m\]\u\[\e[32m\]@\[\e[34m\]\h \[\e[35m\]\W\[\e[31m\]]\[\e[37m\]\\$ \[\e[0m\]"
+
+# ====================
+# Scripts
+# ====================
+
+# Archive extractor
 ex () {
   if [ -f "$1" ]; then
     case $1 in
@@ -82,14 +91,51 @@ ex () {
   fi
 }
 
-# don't put duplicate lines or lines starting with space in the history
-HISTCONTROL=ignoreboth
 
-# append to the history file, don't overwrite it
-shopt -s histappend
 
-# check the window size after each command and, if necessary, update the values of LINES and COLUMNS
-shopt -s checkwinsize
-
-# ignore upper and lowercase when TAB completion
-bind "set completion-ignore-case on"
+# Video frame extractor
+function extract-frames {
+    local input_file="$1"
+    local output_dir="${2:-frames}"
+    
+    # Check if input file was provided
+    if [ -z "$input_file" ]; then
+        echo "Usage: extract-frames <video_file> [output_dir]"
+        return 1
+    fi
+    
+    # Check if input file exists
+    if [ ! -f "$input_file" ]; then
+        echo "Error: Input file \"$input_file\" does not exist"
+        return 1
+    fi
+    
+    # Get video information before extraction
+    echo "Analyzing video..."
+    local fps=$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of default=noprint_wrappers=1:nokey=1 "$input_file")
+    local duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$input_file")
+    local expected_frames=$(echo "$fps * $duration" | bc -l | cut -d'.' -f1)
+    
+    echo "Video FPS: $fps"
+    echo "Duration: $duration seconds"
+    echo "Expected number of frames: $expected_frames"
+    
+    # Create output directory if it doesn't exist
+    mkdir -p "$output_dir"
+    
+    # Extract frames using ffmpeg
+    echo "Extracting frames..."
+    ffmpeg -i "$input_file" -fps_mode vfr "$output_dir/frame_%d.png"
+    
+    # Count actual extracted frames
+    local extracted_frames=$(ls -1 "$output_dir"/frame_*.png 2>/dev/null | wc -l)
+    echo "Extracted frames: $extracted_frames"
+    
+    if [ "$extracted_frames" -eq "$expected_frames" ]; then
+        echo "✅ Extraction complete - all frames were extracted"
+    else
+        echo "⚠️  Number of extracted frames differs from expected frames"
+        echo "This might be normal if the video has variable frame rate (VFR)"
+        echo "or if some frames are duplicates"
+    fi
+}

@@ -1,19 +1,31 @@
 #!/bin/bash
-# if not running interactively, don't do anything
+# Exit if not running interactively
 [[ $- != *i* ]] && return
 
-# aliases
+# ============================
+# Aliases
+# ============================
+
+# Package management
 alias update='brew update && brew upgrade && brew autoremove && brew cleanup'
 alias install='brew install'
 alias remove='brew uninstall'
 alias search='brew search'
+
+# System commands
 alias reboot='sudo reboot'
+
+# Navigation & files
 alias ls='eza -l --color=always --group-directories-first'
 alias la='eza -al --color=always --group-directories-first'
 alias ..='cd ..'
-alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
-alias gc='git clone'
 alias rm='rm -iv'
+
+#Git aliases
+alias gc='git clone'
+alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
+
+#yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
 alias yta-aac="yt --extract-audio --audio-format aac"
 alias yta-best="yt --extract-audio --audio-format best"
@@ -29,15 +41,31 @@ alias ytv='yt -f bestvideo'
 alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
+# ============================
+# Shell Behavior and Prompt
+# ============================
+
 # Make tab cycle through completion options instead of just listing them
 bind 'TAB:menu-complete'
 
 # Show all completions on first tab press if there are multiple options
 bind 'set show-all-if-ambiguous on'
 
+# Don't put duplicate lines or lines starting with space in the history
+HISTCONTROL=ignoreboth
+
+# Ignore case in tab completion
+bind "set completion-ignore-case on"
+
+
+# Shell prompt
 PS1="\[\e[1;31m\][\[\e[33m\]\u\[\e[32m\]@\[\e[34m\]\h \[\e[35m\]\W\[\e[31m\]]\[\e[37m\]\\$ \[\e[0m\]"
 
-# archive extractor, usage: ex <file>
+# ====================
+# Scripts
+# ====================
+
+# Archive extractor
 ex () {
   if [ -f "$1" ]; then
     case $1 in
@@ -61,12 +89,9 @@ ex () {
   fi
 }
 
-# don't put duplicate lines or lines starting with space in the history
-HISTCONTROL=ignoreboth
 
-# ignore upper and lowercase when TAB completion
-bind "set completion-ignore-case on"
 
+# Video frame extractor
 function extract-frames {
     local input_file="$1"
     local output_dir="${2:-frames}"
