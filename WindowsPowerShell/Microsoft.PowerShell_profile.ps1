@@ -3,18 +3,18 @@
 # ============================
 
 # Package management
-function Update-System {
+function update {
     choco upgrade all -y
 }
-function Install-Package {
+function install {
     param([string]$PackageName)
     choco install $PackageName -y
 }
-function Remove-Package {
+function remove {
     param([string]$PackageName)
     choco uninstall $PackageName -y
 }
-function Search-Package {
+function search {
     param([string]$PackageName)
     choco search $PackageName
 }
@@ -27,9 +27,9 @@ function Go-Up {
 function rmf {
     param(
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [string[]]$Path,
-        [switch]$Force
+        [string[]]$Path
     )
+
 
     begin {
         $ErrorActionPreference = 'Continue'
@@ -49,15 +49,15 @@ function rmf {
 }
 
 # Git aliases
-function Clone-Dotfiles {
+function dotfiles {
     git clone https://github.com/barkifyings/dotfiles.git
 }
 
 # System commands
-function Restart-ComputerForce { 
+function restart { 
     Restart-Computer -Force 
 }
-function Stop-ComputerForce { 
+function poweroff { 
     Stop-Computer -Force 
 }
 
@@ -66,11 +66,6 @@ function info {
 }
 
 # yt-dlp aliases
-function Download-YTPlaylist {
-    yt-dlp -cio '%(autonumber)s-%(title)s.%(ext)s'
-}
-
-# yt-dlp audio download functions
 $audioFormats = @{
     'aac' = '--extract-audio --audio-format aac'
     'best' = '--extract-audio --audio-format best'
@@ -88,47 +83,29 @@ foreach ($format in $audioFormats.Keys) {
     Invoke-Expression "function $funcName { $command @args }"
 }
 
-# Audio download aliases
 foreach ($format in $audioFormats.Keys) {
     New-Alias -Name "yta-$format" -Value "Download-YTAudio$format" -Force
 }
 
-## Video download functions with argument passthrough
-function Download-YTBest {
+function yt-best {
     param([Parameter(ValueFromRemainingArguments=$true)]$Arguments)
     yt-dlp -f bestvideo+bestaudio @Arguments
 }
 
-function Download-YTVideo {
+function ytv {
     param([Parameter(ValueFromRemainingArguments=$true)]$Arguments)
     yt-dlp -f bestvideo @Arguments
 }
 
-function Download-YTAudio {
+function yta {
     param([Parameter(ValueFromRemainingArguments=$true)]$Arguments)
     yt-dlp -f bestaudio @Arguments
 }
 
-function Download-YTPlaylist {
+function yt-playlist {
     param([Parameter(ValueFromRemainingArguments=$true)]$Arguments)
     yt-dlp -cio '%(autonumber)s-%(title)s.%(ext)s' @Arguments
 }
-
-# Create aliases that won't conflict with built-in commands
-New-Alias -Name update -Value Update-System -Force
-New-Alias -Name install -Value Install-Package -Force
-New-Alias -Name remove -Value Remove-Package -Force
-New-Alias -Name search -Value Search-Package -Force
-New-Alias -Name reboot -Value Restart-ComputerForce -Force
-New-Alias -Name poweroff -Value Stop-ComputerForce -Force
-New-Alias -Name '..' -Value Go-Up -Force
-New-Alias -Name yt-playlist -Value Download-YTPlaylist -Force
-New-Alias -Name yt -Value yt-dlp -Force
-New-Alias -Name yt-best -Value Download-YTBest -Force
-New-Alias -Name ytv -Value Download-YTVideo -Force
-New-Alias -Name yta -Value Download-YTAudio -Force
-New-Alias -Name downloadchannel -Value Download-YTChannel -Force
-New-Alias -Name ex -Value Extract-Archive -Force
 
 # ============================
 # Shell Behavior and Prompt
