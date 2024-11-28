@@ -20,7 +20,7 @@ function search {
 }
 
 # Navigation & files
-function Go-Up { 
+function .. { 
     Set-Location .. 
 }
 
