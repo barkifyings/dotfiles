@@ -65,6 +65,15 @@ function info {
     systeminfo 
 }
 
+# SSH aliases
+function sshmacbook { 
+    ssh barki@macbook
+}
+
+function sshveriton { 
+    ssh barki@veriton 
+}
+
 # yt-dlp aliases
 $audioFormats = @{
     'aac' = '--extract-audio --audio-format aac'
