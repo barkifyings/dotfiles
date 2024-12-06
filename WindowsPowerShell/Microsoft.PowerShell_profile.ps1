@@ -180,50 +180,31 @@ function Extract-Archive {
 function Extract-Frames {
     param(
         [string]$InputFile,
-        [string]$OutputDir = "frames"
+        [string]$OutputDir = ""
     )
 
-    if (!(Test-Path $InputFile)) {
-        Write-Error "Input file '$InputFile' does not exist"
+    if (-not $InputFile) {
+        Write-Error "Usage: Extract-Frames -InputFile <video_file> [-OutputDir <output_dir>]"
         return
     }
 
-    # Ensure output directory exists
-    if (!(Test-Path $OutputDir)) {
+    if (-not (Test-Path $InputFile)) {
+        Write-Error "Error: Input file '$InputFile' does not exist"
+        return
+    }
+
+    if (-not $OutputDir) {
+        $baseName = [System.IO.Path]::GetFileNameWithoutExtension($InputFile)
+        $OutputDir = "${baseName}_frames"
+    }
+
+    if (-not (Test-Path $OutputDir)) {
         New-Item -ItemType Directory -Path $OutputDir | Out-Null
     }
 
-    # Get video information
-    $fpsRaw = (ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of default=noprint_wrappers=1:nokey=1 $InputFile)
-    $duration = (ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $InputFile)
+    Write-Host "Extracting frames..."
+    $ffmpegCommand = "ffmpeg -i `"$InputFile`" `"$OutputDir/frame_%d.png`""
+    Invoke-Expression $ffmpegCommand
 
-    # Parse FPS (handle fraction)
-    $fpsParts = $fpsRaw -split '/'
-    $fps = if ($fpsParts.Count -eq 2) { 
-        [double]$fpsParts[0] / [double]$fpsParts[1] 
-    } else { 
-        [double]$fpsRaw 
-    }
-
-    $expectedFrames = [math]::Floor($fps * $duration)
-
-    Write-Host "Video FPS: $fps"
-    Write-Host "Duration: $duration seconds"
-    Write-Host "Expected number of frames: $expectedFrames"
-
-    # Extract frames
-    ffmpeg -i $InputFile -fps_mode vfr "$OutputDir/frame_%d.png"
-
-    # Count extracted frames
-    $extractedFrames = (Get-ChildItem "$OutputDir/frame_*.png" | Measure-Object).Count
-
-    Write-Host "Extracted frames: $extractedFrames"
-
-    if ($extractedFrames -eq $expectedFrames) {
-        Write-Host "✅ Extraction complete - all frames were extracted"
-    }
-    else {
-        Write-Warning "Number of extracted frames differs from expected frames"
-        Write-Warning "This might be normal if the video has variable frame rate (VFR)"
-    }
+    Write-Host "✅ Extraction complete"
 }
