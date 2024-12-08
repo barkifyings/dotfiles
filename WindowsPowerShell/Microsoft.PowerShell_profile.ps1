@@ -128,21 +128,13 @@ if (Test-Path($ChocolateyProfile)) {
 
 
 # Shell prompt
-function Prompt {
-    $host.UI.RawUI.ForegroundColor = 'Red'
-    Write-Host -NoNewline "["
-    $host.UI.RawUI.ForegroundColor = 'Yellow'
-    Write-Host -NoNewline "$env:USERNAME"
-    $host.UI.RawUI.ForegroundColor = 'Green'
-    Write-Host -NoNewline "@"
-    $host.UI.RawUI.ForegroundColor = 'Cyan'
-    Write-Host -NoNewline "$env:COMPUTERNAME"
-    $host.UI.RawUI.ForegroundColor = 'Magenta'
-    Write-Host -NoNewline " $(Get-Location)"
-    $host.UI.RawUI.ForegroundColor = 'Red'
-    Write-Host "]" -NoNewline
-    $host.UI.RawUI.ForegroundColor = 'White'
-    return "> "
+function prompt {
+    $ESC = [char]27
+    $username = $env:USERNAME
+    $hostname = $env:COMPUTERNAME
+    $location = $(Get-Location)
+    
+    "$ESC[1;31m[$ESC[33m$username$ESC[32m@$ESC[34m$hostname $ESC[35m$location$ESC[31m]$ESC[37m$ $ESC[0m"
 }
 
 # ====================
