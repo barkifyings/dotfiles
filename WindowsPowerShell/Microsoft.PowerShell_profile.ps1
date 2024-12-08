@@ -132,7 +132,7 @@ function prompt {
     $ESC = [char]27
     $username = $env:USERNAME
     $hostname = $env:COMPUTERNAME
-    $location = $(Get-Location)
+    $location = Split-Path -Leaf -Path (Get-Location)
     
     "$ESC[1;31m[$ESC[33m$username$ESC[32m@$ESC[34m$hostname $ESC[35m$location$ESC[31m]$ESC[37m$ $ESC[0m"
 }
