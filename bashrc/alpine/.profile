@@ -1,6 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 # Exit if not running interactively
-[[ $- != *i* ]] && return
+case "$-" in
+  *i*) ;;
+  *) return ;;
+esac
 
 # ============================
 # Aliases
@@ -23,11 +26,11 @@ alias la='ls -lAh --color=auto --group-directories-first'
 alias ..='cd ..'
 alias rm='rm -iv'
 
-#Git aliases
+# Git aliases
 alias gc='git clone'
 alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
 
-#yt-dlp aliases
+# yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
 alias yta-aac="yt --extract-audio --audio-format aac"
 alias yta-best="yt --extract-audio --audio-format best"
@@ -44,79 +47,64 @@ alias yta='yt -f bestaudio'
 alias downloadchannel='yt-best -ciw -o "%(title)s.%(ext)s"'
 
 # ============================
-# Shell Behavior and Prompt
+# Shell Prompt
 # ============================
 
-# Make tab cycle through completion options instead of just listing them
-bind 'TAB:menu-complete'
-
-# Show all completions on first tab press if there are multiple options
-bind 'set show-all-if-ambiguous on'
-
-# Don't put duplicate lines or lines starting with space in the history
-HISTCONTROL=ignoreboth
-
-# Ignore case in tab completion
-bind "set completion-ignore-case on"
-
-
 # Shell prompt
-PS1="\[\e[1;31m\][\[\e[33m\]\u\[\e[32m\]@\[\e[34m\]\h \[\e[35m\]\W\[\e[31m\]]\[\e[37m\]\\$ \[\e[0m\]"
+PS1="\033[1;31m[\033[33m\u\033[32m@\033[34m\h \033[35m\W\033[31m]\033[37m\$ \033[0m"
 
 # ====================
 # Scripts
 # ====================
 
 # Archive extractor
-ex () {
+ex() {
   if [ -f "$1" ]; then
-    case $1 in
-      *.tar.bz2|*.tbz2)         tar xjf "$1"    ;;
-      *.tar.gz|*.tgz)           tar xzf "$1"    ;;
-      *.tar|*.tar.xz)           tar xf "$1"     ;;
-      *.bz2)                    bunzip2 "$1"     ;;
-      *.rar)                    unrar x "$1"     ;;
-      *.gz)                     gunzip "$1"      ;;
-      *.zip)                    unzip "$1"       ;;
-      *.Z)                      uncompress "$1"  ;;
-      *.7z)                     7z x "$1"        ;;
-      *.lzma)                   lzma -d "$1"     ;;
-      *.deb)                    ar x "$1"        ;;
-      *.xz)                     unxz "$1"        ;;
-      *.tar.zst)               unzstd "$1"      ;;
-      *)                        echo "'$1' cannot be extracted" ;;
+    case "$1" in
+      *.tar.bz2|*.tbz2)    tar xjf "$1"       ;;
+      *.tar.gz|*.tgz)      tar xzf "$1"       ;;
+      *.tar|*.tar.xz)      tar xf "$1"        ;;
+      *.bz2)               bunzip2 "$1"       ;;
+      *.rar)               unrar x "$1"       ;;
+      *.gz)                gunzip "$1"        ;;
+      *.zip)               unzip "$1"         ;;
+      *.Z)                 uncompress "$1"    ;;
+      *.7z)                7z x "$1"          ;;
+      *.lzma)              lzma -d "$1"       ;;
+      *.deb)               ar x "$1"          ;;
+      *.xz)                unxz "$1"          ;;
+      *.tar.zst)           unzstd "$1"        ;;
+      *)                   echo "'$1' cannot be extracted" ;;
     esac
   else
     echo "'$1' is not a valid file"
   fi
 }
 
-
-
 # Video frame extractor
-function extract-frames {
-  local input_file="$1"
-  local base_name=$(basename "$input_file" | sed 's/\.[^.]*$//')
-  local output_dir="${2:-${base_name}_frames}"
-  
+extract-frames() {
+  input_file="$1"
+  base_name=$(basename "$input_file" | sed 's/\.[^.]*$//')
+  output_dir="${2:-${base_name}_frames}"
+
   # Check if input file was provided
   if [ -z "$input_file" ]; then
     echo "Usage: extract-frames <video_file> [output_dir]"
     return 1
   fi
-  
+
   # Check if input file exists
   if [ ! -f "$input_file" ]; then
     echo "Error: Input file \"$input_file\" does not exist"
     return 1
   fi
-  
+
   # Create output directory if it doesn't exist
   mkdir -p "$output_dir"
-  
+
   # Extract frames using ffmpeg
   echo "Extracting frames..."
   ffmpeg -i "$input_file" "$output_dir/frame_%d.png"
-  
-  echo "✅ Extraction complete"
+
+  echo "Extraction complete"
 }
