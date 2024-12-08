@@ -23,11 +23,11 @@ alias la='eza -al --color=always --group-directories-first'
 alias ..='cd ..'
 alias rm='rm -iv'
 
-#Git aliases
+# Git aliases
 alias gc='git clone'
 alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
 
-#yt-dlp aliases
+# yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
 alias yta-aac="yt --extract-audio --audio-format aac"
 alias yta-best="yt --extract-audio --audio-format best"
