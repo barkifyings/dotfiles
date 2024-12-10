@@ -61,20 +61,20 @@ PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%m %F{magenta}%~%F{red}]%F{white}%#
 ex () {
   if [ -f "$1" ]; then
     case $1 in
-      *.tar.bz2|*.tbz2)         tar xjf "$1"    ;;
-      *.tar.gz|*.tgz)           tar xzf "$1"    ;;
-      *.tar|*.tar.xz)           tar xf "$1"     ;;
-      *.bz2)                    bunzip2 "$1"     ;;
-      *.rar)                    unrar x "$1"     ;;
-      *.gz)                     gunzip "$1"      ;;
-      *.zip)                    unzip "$1"       ;;
-      *.Z)                      uncompress "$1"  ;;
-      *.7z)                     7z x "$1"        ;;
-      *.lzma)                   lzma -d "$1"     ;;
-      *.deb)                    ar x "$1"        ;;
-      *.xz)                     unxz "$1"        ;;
-      *.tar.zst)               unzstd "$1"      ;;
-      *)                        echo "'$1' cannot be extracted" ;;
+      *.tar.bz2|*.tbz2)    tar xjf "$1"       ;;
+      *.tar.gz|*.tgz)      tar xzf "$1"       ;;
+      *.tar|*.tar.xz)      tar xf "$1"        ;;
+      *.bz2)               bunzip2 "$1"       ;;
+      *.rar)               unrar x "$1"       ;;
+      *.gz)                gunzip "$1"        ;;
+      *.zip)               unzip "$1"         ;;
+      *.Z)                 uncompress "$1"    ;;
+      *.7z)                7z x "$1"          ;;
+      *.lzma)              lzma -d "$1"       ;;
+      *.deb)               ar x "$1"          ;;
+      *.xz)                unxz "$1"          ;;
+      *.tar.zst)           unzstd "$1"        ;;
+      *)                   echo "'$1' cannot be extracted" ;;
     esac
   else
     echo "'$1' is not a valid file"
