@@ -187,16 +187,30 @@ function Extract-Frames {
 
     if (-not $OutputDir) {
         $baseName = [System.IO.Path]::GetFileNameWithoutExtension($InputFile)
-        $OutputDir = "${baseName}_frames"
+        $sanitizedName = $baseName -replace '[^\w\-\.]', '_'
+        $OutputDir = Join-Path (Get-Location) "${sanitizedName}_frames"
     }
 
     if (-not (Test-Path $OutputDir)) {
         New-Item -ItemType Directory -Path $OutputDir | Out-Null
     }
 
-    Write-Host "Extracting frames..."
-    $ffmpegCommand = "ffmpeg -i `"$InputFile`" `"$OutputDir/frame_%d.png`""
-    Invoke-Expression $ffmpegCommand
+    $resolvedInput = Resolve-Path $InputFile
+    $resolvedOutput = $OutputDir
 
-    Write-Host "✅ Extraction complete"
+    Write-Host "Extracting frames..."
+    $outputPattern = Join-Path $resolvedOutput "frame_%d.png"
+    
+    $ffmpegArgs = @(
+        "-i", "`"$resolvedInput`"",
+        "`"$outputPattern`""
+    )
+    
+    & ffmpeg -i "$resolvedInput" "$outputPattern"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "✅ Extraction complete"
+    } else {
+        Write-Host "❌ Extraction failed"
+    }
 }
