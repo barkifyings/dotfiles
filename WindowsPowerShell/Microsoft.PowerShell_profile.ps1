@@ -116,6 +116,11 @@ function yt-playlist {
     yt-dlp -cio '%(autonumber)s-%(title)s.%(ext)s' @Arguments
 }
 
+function downloadchannel {
+    param([Parameter(ValueFromRemainingArguments=$true)]$Arguments)
+    yt-best -- -ciw -o "%(title)s.%(ext)s" @Arguments
+}
+
 # ============================
 # Shell Behavior and Prompt
 # ============================
