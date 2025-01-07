@@ -27,8 +27,8 @@ alias gc='git clone'
 alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
 
 # Python aliases
-alias pip3='pip3 --no-cache-dir --break-system-packages'
-alias python3='python'
+alias pip='pip3'
+alias python='python3'
 
 # yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
