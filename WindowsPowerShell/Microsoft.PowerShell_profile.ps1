@@ -219,3 +219,87 @@ function Extract-Frames {
         Write-Host "❌ Extraction failed"
     }
 }
+
+#Video flipper
+function Flip-Video {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$InputFilePath
+    )
+
+    try {
+        # Clean the input path
+        $cleanPath = $InputFilePath.Trim()
+
+        if (-not (Test-Path $cleanPath)) {
+            Write-Host "❌ Input file not found: $cleanPath"
+            return
+        }
+
+        $fileInfo = Get-Item $cleanPath
+        $directory = $fileInfo.DirectoryName
+        $nameWithoutExt = [System.IO.Path]::GetFileNameWithoutExtension($fileInfo.Name)
+        $extension = $fileInfo.Extension
+
+        # Construct output path
+        $outputFile = Join-Path $directory "${nameWithoutExt}_flipped${extension}"
+
+        Write-Host "Flipping video horizontally..."
+        Write-Host "Input: $($fileInfo.FullName)"
+        Write-Host "Output: $outputFile"
+
+        # Use direct ffmpeg call with properly quoted paths
+        & ffmpeg -i "$($fileInfo.FullName)" -vf "hflip" -c:a copy "$outputFile"
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Video flipped successfully"
+        } else {
+            Write-Host "❌ Failed to flip video (Exit code: $LASTEXITCODE)"
+        }
+    }
+    catch {
+        Write-Host "❌ Error: $_"
+    }
+}
+
+# Video reverser
+function Reverse-Video {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$InputFilePath
+    )
+
+    try {
+        # Clean the input path
+        $cleanPath = $InputFilePath.Trim()
+
+        if (-not (Test-Path $cleanPath)) {
+            Write-Host "❌ Input file not found: $cleanPath"
+            return
+        }
+
+        $fileInfo = Get-Item $cleanPath
+        $directory = $fileInfo.DirectoryName
+        $nameWithoutExt = [System.IO.Path]::GetFileNameWithoutExtension($fileInfo.Name)
+        $extension = $fileInfo.Extension
+
+        # Construct output path
+        $outputFile = Join-Path $directory "${nameWithoutExt}_reversed${extension}"
+
+        Write-Host "Reversing video..."
+        Write-Host "Input: $($fileInfo.FullName)"
+        Write-Host "Output: $outputFile"
+
+        # Use direct ffmpeg call with properly quoted paths
+        & ffmpeg -i "$($fileInfo.FullName)" -vf "reverse" -af "areverse" "$outputFile"
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Video reversed successfully"
+        } else {
+            Write-Host "❌ Failed to reverse video (Exit code: $LASTEXITCODE)"
+        }
+    }
+    catch {
+        Write-Host "❌ Error: $_"
+    }
+}
