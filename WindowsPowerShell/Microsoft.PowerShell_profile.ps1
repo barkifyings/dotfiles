@@ -214,9 +214,9 @@ function Extract-Frames {
     & ffmpeg -i "$resolvedInput" "$outputPattern"
     
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "✅ Extraction complete"
+        Write-Host "$([char]0x2705) Extraction complete"
     } else {
-        Write-Host "❌ Extraction failed"
+        Write-Host "$([char]0x274C) Extraction failed"
     }
 }
 
@@ -232,7 +232,7 @@ function Flip-Video {
         $cleanPath = $InputFilePath.Trim()
 
         if (-not (Test-Path $cleanPath)) {
-            Write-Host "❌ Input file not found: $cleanPath"
+            Write-Host "$([char]0x274C) Input file not found: $cleanPath"
             return
         }
 
@@ -252,13 +252,13 @@ function Flip-Video {
         & ffmpeg -i "$($fileInfo.FullName)" -vf "hflip" -c:a copy "$outputFile"
 
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ Video flipped successfully"
+            Write-Host "$([char]0x2705) Video flipped successfully"
         } else {
-            Write-Host "❌ Failed to flip video (Exit code: $LASTEXITCODE)"
+            Write-Host "$([char]0x274C) Failed to flip video (Exit code: $LASTEXITCODE)"
         }
     }
     catch {
-        Write-Host "❌ Error: $_"
+        Write-Host "$([char]0x274C) Error: $_"
     }
 }
 
@@ -274,7 +274,7 @@ function Reverse-Video {
         $cleanPath = $InputFilePath.Trim()
 
         if (-not (Test-Path $cleanPath)) {
-            Write-Host "❌ Input file not found: $cleanPath"
+            Write-Host "$([char]0x274C) Input file not found: $cleanPath"
             return
         }
 
@@ -294,12 +294,12 @@ function Reverse-Video {
         & ffmpeg -i "$($fileInfo.FullName)" -vf "reverse" -af "areverse" "$outputFile"
 
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ Video reversed successfully"
+            Write-Host "$([char]0x2705) Video reversed successfully"
         } else {
-            Write-Host "❌ Failed to reverse video (Exit code: $LASTEXITCODE)"
+            Write-Host "$([char]0x274C) Failed to reverse video (Exit code: $LASTEXITCODE)"
         }
     }
     catch {
-        Write-Host "❌ Error: $_"
+        Write-Host "$([char]0x274C) Error: $_"
     }
 }
