@@ -9,28 +9,25 @@ fastfetch
 # ============================
 
 # Package management
-alias update='brew update && brew upgrade && brew autoremove && brew cleanup'
-alias install='brew install'
-alias remove='brew uninstall'
-alias search='brew search'
+alias update='sudo apt update && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt clean'
+alias install='sudo apt install -y'
+alias remove='sudo apt purge -y'
+alias search='apt-cache search'
 
 # System commands
-alias reboot='sudo reboot'
-alias poweroff='sudo shutdown -h now'
+alias reboot='sudo systemctl reboot'
+alias poweroff='sudo systemctl poweroff'
+alias info='inxi -Fxxxrza'
 
 # Navigation & files
-alias ls='eza -l --color=always --group-directories-first'
-alias la='eza -al --color=always --group-directories-first'
+alias ls='exa -l --color=always --group-directories-first'
+alias la='exa -al --color=always --group-directories-first'
 alias ..='cd ..'
 alias rm='rm -iv'
 
 # Git aliases
 alias gc='git clone'
 alias dotfiles='git clone https://github.com/barkifyings/dotfiles.git'
-
-# Python aliases
-alias pip='pip3'
-alias python='python3'
 
 # yt-dlp aliases
 alias yt-playlist="yt -cio '%(autonumber)s-%(title)s.%(ext)s'"
